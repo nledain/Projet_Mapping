@@ -1,0 +1,22 @@
+PARTIE INTRO:
+Notre projet consiste à développer un algorithme de mapping de reads courts sur le génome de référence de *Plasmodium falciparum*, le parasite responsable du paludisme.
+
+Lors d'un séquençage, on obtient un grand nombre de petites séquences d'ADN, appelées reads. L'objectif du mapping est de retrouver leur position d'origine dans le génome de référence. La difficulté, c'est que ces reads peuvent contenir des erreurs de séquençage, des substitutions ou de petites insertions et délétions. De plus, certaines régions du génome sont répétées, ce qui peut rendre le placement ambigu.
+
+Pour répondre à ce problème, nous avons développé une stratégie en plusieurs étapes.
+
+Notre approche commence par rechercher le read entier. Si aucune correspondance exacte n'est trouvée, nous le découpons en petits fragments de longueur k, appelés k-mers. Ces fragments servent de graines : leurs occurrences dans le génome permettent de proposer des régions candidates. Nous vérifions ensuite ces régions par alignement, en autorisant jusqu'à trois erreurs avec nos paramètres actuels.
+
+Nous avons choisi une longueur k de 21, avec un maximum de 200 occurrences par k-mer et 30 candidats examinés, pour limiter le temps de calcul. Ces paramètres représentent un compromis entre sensibilité et efficacité.
+
+Enfin, nous évaluons les résultats en les comparant à un fichier BAM de référence. Nous distinguons les reads correctement placés, les placements ambigus et les reads non mappés. Nous étudions également la qualité des reads, pour comprendre dans quelle mesure la fiabilité des bases peut influencer le mapping.
+
+
+
+
+PARTIE 3:
+Pour le contrôle qualité, nous utilisons les scores Phred présents dans le fichier FASTQ. Chaque base possède un score qui estime sa probabilité d'erreur : plus ce score est élevé, plus la base est considérée comme fiable.
+
+Notre code calcule la qualité Phred moyenne pour chaque position des reads traités, à partir d'histogrammes qui regroupent les bases selon leur score. Le graphique permet notamment de repérer une éventuelle baisse de qualité en fin de read.
+
+Dans le deuxième contrôle qualité, on va vérifier la qualité des reads de manières plus globales dans les contrôles, sur un reads présentant une mutation, on va regarder l'occurrence des kmeres, vérifiant au passage l'importance du read (beaucoup d'occurrences peuvent montrer une séquence satellite, à l'inverse une faible occurrence, témoigne d'un gène spécifique)

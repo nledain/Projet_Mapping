@@ -1,0 +1,10 @@
+# Index générés
+index.npz
+index_bwt/
+
+# Fichiers temporaires Python
+__pycache__/
+*.py[cod]
+
+# Fichiers temporaires Jupyter
+.ipynb_checkpoints/
